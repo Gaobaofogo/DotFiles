@@ -4,7 +4,7 @@
 """"""""""""""""""""""""""""""""""""""""
 "        Vim Configuration File        "
 "     Maintainer: Gabriel Augusto      "
-"       Last Change: 2019 Dec 07       "
+"       Last Change: 2020 Mar 22       "
 """"""""""""""""""""""""""""""""""""""""
 
 """ COLORS CODE
@@ -39,18 +39,15 @@ Plugin 'VundleVim/Vundle.vim' "Pluguin manager
 " Plugins
 Plugin 'vim-airline/vim-airline' " Airline
 Plugin 'vim-airline/vim-airline-themes' " Airline themes
-" Plugin 'scrooloose/nerdtree' " Nerd Tree
-Plugin 'majutsushi/tagbar'
+Plugin 'scrooloose/nerdtree' " Nerd Tree
 Plugin 'tpope/vim-fugitive'
-" Plugin 'luochen1990/rainbow' " Rainbow match
+Plugin 'luochen1990/rainbow' " Rainbow match
 Plugin 'w0rp/ale' " Systax check
 Plugin 'maralla/completor.vim' " Suggests words
 Plugin 'davidhalter/jedi-vim' " Jedi Pluguin
-"Plugin 'WolfgangMehner/c-support' " C suport in vim
 
 " Color schemes
-Plugin 'MidnaPeach/neonwave.vim'
-Plugin 'ArthurGorgonio/vim-themes-improved'
+Plugin 'dracula/vim', { 'name': 'dracula' }
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -78,21 +75,31 @@ let g:ale_fixers = {
 " the word fold indicates that (), [], and {} are colored individually by the
 "   sectioned sequence
 let g:rainbow_active = 1 "0 if you want to enable it later via :RainbowToggle
-" let g:rainbow_conf = {
-"       \   'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
-"       \   'ctermfgs': [9, 10, 11, 21, 13, 14, 22, 202],
-"       \   'operators': '_,_',
-"       \   'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold',
-"       \       'start=/{/ end=/}/ fold'],
-"       \   'separately': {
-"       \     '*': {},
-"       \     'tex': {
-"       \       'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/',
-"       \           'start=/\{\ end=/\}\ '],
-"       \     },
-"       \     'lisp': {
-"       \       'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick',
-" 
+let g:rainbow_conf = {
+      \   'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
+      \   'ctermfgs': [9, 10, 11, 21, 13, 14, 22, 202],
+      \   'operators': '_,_',
+      \   'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold',
+      \       'start=/{/ end=/}/ fold'],
+      \   'separately': {
+      \     '*': {},
+      \     'tex': {
+      \       'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/',
+      \           'start=/\{\ end=/\}\ '],
+      \     },
+      \     'lisp': {
+      \       'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick',
+      \           'darkorchid3'],
+      \     },
+      \     'vim': {
+      \       'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/',
+      \           'start=/{/ end=/}/ fold',
+      \           'start=/(/ end=/)/ containedin=vimFuncBody',
+      \           'start=/\[/ end=/\]/ containedin=vimFuncBody',
+      \           'start=/{/ end=/}/ fold containedin=vimFuncBody'],
+      \     },
+      \  }
+      \}
 
 " Airline
 let g:airline#extensions#tabline#enabled=1
@@ -104,8 +111,8 @@ let g:airline_theme='wombat'
 map <F2> :NERDTreeToggle<CR>
 let g:NERDTreeChDirMode=2
 
-" Tagbar
-nmap <F8> :TagbarToggle<CR>
+" Completor
+let g:completor_clang_binary = '/usr/bin'
 
 syntax on
 
@@ -139,7 +146,7 @@ set t_Co=256
 set undolevels=1000
 
 " Setting color scheme
-colorscheme calm-theme
+colorscheme dracula
 
 " Remaping commands
 nnoremap <Tab> :bnext<CR>
