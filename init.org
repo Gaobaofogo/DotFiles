@@ -1,9 +1,12 @@
 * Init Config
 ** Performance
    #+begin_src emacs-lisp
-     (setq gc-cons-threshold 100000000) ; Approximately 100mb
-     (setq read-process-output-max (* 1024 1024 10)) ;; 10mb
-     (setq lsp-idle-delay 0.500)
+    (setq gc-cons-threshold (* 100 1024 1024)
+	read-process-output-max (* 1024 1024 10)
+	treemacs-space-between-root-nodes nil
+	company-idle-delay 0.0
+	company-minimum-prefix-length 1
+	lsp-idle-delay 0.1)  ;; clangd is fast
    #+end_src
 ** Ajustando a janela e fonte
    #+begin_src emacs-lisp
@@ -64,31 +67,29 @@
    #+end_src
    
 * Completion System to Emacs
-
-Using Ivy
+** Using Ivy
 #+begin_src emacs-lisp
-(use-package ivy)
-(ivy-mode 1)
-(setq ivy-use-virtual-buffers t)
-(setq ivy-count-format "(%d/%d) ")
-(global-set-key (kbd "C-s") 'swiper-isearch)
-(global-set-key (kbd "M-x") 'counsel-M-x)
-(global-set-key (kbd "C-x C-f") 'counsel-find-file)
-(global-set-key (kbd "M-y") 'counsel-yank-pop)
-(global-set-key (kbd "<f1> f") 'counsel-describe-function)
-(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-(global-set-key (kbd "<f1> l") 'counsel-find-library)
-(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-(global-set-key (kbd "<f2> j") 'counsel-set-variable)
-(global-set-key (kbd "C-x b") 'ivy-switch-buffer)
-(global-set-key (kbd "C-c v") 'ivy-push-view)
-(global-set-key (kbd "C-c V") 'ivy-pop-view)
+  (use-package ivy)
+  (ivy-mode 1)
+  (setq ivy-use-virtual-buffers t)
+  (setq ivy-count-format "(%d/%d) ")
+  (global-set-key (kbd "C-s") 'swiper-isearch)
+  (global-set-key (kbd "M-x") 'counsel-M-x)
+  (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+  (global-set-key (kbd "M-y") 'counsel-yank-pop)
+  (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+  (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+  (global-set-key (kbd "<f1> l") 'counsel-find-library)
+  (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+  (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+  (global-set-key (kbd "<f2> j") 'counsel-set-variable)
+  (global-set-key (kbd "C-x b") 'ivy-switch-buffer)
+  (global-set-key (kbd "C-c v") 'ivy-push-view)
+  (global-set-key (kbd "C-c V") 'ivy-pop-view)
 
-(use-package ivy-rich
-  :init (ivy-rich-mode 1))
+  (use-package ivy-rich
+    :init (ivy-rich-mode 1))
 #+end_src
-
 * Making Emacs beautiful
 #+begin_src emacs-lisp
   (use-package all-the-icons)
@@ -105,7 +106,7 @@ Using Ivy
    '(custom-safe-themes
      '("234dbb732ef054b109a9e5ee5b499632c63cc24f7c2383a849815dacc1727cb6" default))
    '(package-selected-packages
-     '(apheleia lsp-mode lsp-dart lsp-treemacs flycheck company lsp-ui company hover)))
+     '(apheleia lsp-mode lsp-dart lsp-treemacs flycheck company lsp-ui company hover dap-mode)))
   (custom-set-faces
    ;; custom-set-faces was added by Custom.
    ;; If you edit it by hand, you could mess it up, so be careful.
@@ -127,60 +128,67 @@ Using Ivy
 #+end_src
 
 * Helpful Emacs
-
+** Keymaps
 #+begin_src emacs-lisp
-(use-package which-key
-  :init (which-key-mode)
-  :diminish which-key-mode)
+  (use-package which-key
+    :init (which-key-mode)
+    :diminish which-key-mode)
 
-(use-package helpful
-  :custom
-  (counsel-describe-function-function #'helpful-callable)
-  (counsel-describe-variable-function #'helpful-variable)
-  :bind
-  ([remap describe-function] . helpful-function)
-  ([remap describe-symbol] . helpful-symbol)
-  ([remap describe-variable] . helpful-variable)
-  ([remap describe-command] . helpful-command)
-  ([remap describe-key] . helpful-key))
+  (use-package helpful
+    :custom
+    (counsel-describe-function-function #'helpful-callable)
+    (counsel-describe-variable-function #'helpful-variable)
+    :bind
+    ([remap describe-function] . helpful-function)
+    ([remap describe-symbol] . helpful-symbol)
+    ([remap describe-variable] . helpful-variable)
+    ([remap describe-command] . helpful-command)
+    ([remap describe-key] . helpful-key))
 
-; Pacote para definir key-bidings: https://github.com/noctuid/general.el
-(use-package general)
-
-(general-define-key
- "C-M-j" 'counsel-switch-buffer)
-
-(use-package evil
-  :ensure t
-  :init
-  (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
-  (setq evil-want-keybinding nil)
-  :config
-  (evil-mode 1)
-  (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-  (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
-
-  ;; Use visual line motions even outside of visual-line-mode buffers
-  (evil-global-set-key 'motion "j" 'evil-next-visual-line)
-  (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
-
-  (evil-set-initial-state 'messages-buffer-mode 'normal)
-  (evil-set-initial-state 'dashboard-mode 'normal))
-
-(use-package evil-collection
-  :after evil
-  :ensure t
-  :config
-  (evil-collection-init))
-
-(use-package hydra)
-
-(defhydra hydra-zoom (global-map "<f2>")
-  "zoom"
-  ("g" text-scale-increase "in")
-  ("l" text-scale-decrease "out"))
+  ; Pacote para definir key-bidings: https://github.com/noctuid/general.el
+  (use-package general)
+  (general-define-key
+   "C-M-j" 'counsel-switch-buffer)
 #+end_src
 
+** Evil mode
+#+begin_src emacs-lisp
+  (use-package evil
+    :ensure t
+    :init
+    (setq evil-want-integration t) ;; This is optional since it's already set to t by default.
+    (setq evil-want-keybinding nil)
+    :config
+    (evil-mode 1)
+    (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
+    (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char-and-join)
+
+    ;; Use visual line motions even outside of visual-line-mode buffers
+    (evil-global-set-key 'motion "j" 'evil-next-visual-line)
+    (evil-global-set-key 'motion "k" 'evil-previous-visual-line)
+
+    (evil-set-initial-state 'messages-buffer-mode 'normal)
+    (evil-set-initial-state 'dashboard-mode 'normal))
+
+  (use-package evil-collection
+    :after evil
+    :ensure t
+    :config
+    (evil-collection-init))
+
+  (use-package hydra)
+
+  (defhydra hydra-zoom (global-map "<f2>")
+    "zoom"
+    ("g" text-scale-increase "in")
+    ("l" text-scale-decrease "out"))
+#+end_src
+
+** Terminal
+   #+begin_src emacs-lisp
+    (use-package vterm
+	:ensure t)
+   #+end_src
 * Development
 ** Git using magit
 #+begin_src emacs-lisp
@@ -189,6 +197,11 @@ Using Ivy
   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1))
 #+end_src
 
+** Text completion with Company-Mode
+   #+begin_src emacs-lisp
+     (use-package company)
+     (add-hook 'after-init-hook 'global-company-mode)
+   #+end_src
 ** Projectile
 #+begin_src emacs-lisp
 (use-package projectile
@@ -302,7 +315,10 @@ With a prefix argument ARG prompts you for a directory on which to run search in
    ; Project errors on modeline
    (with-eval-after-load 'lsp-mode
    ;; :global/:workspace/:file
-   (setq lsp-modeline-diagnostics-scope :workspace))
+    (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
+    (require 'dap-cpptools)
+    (setq lsp-modeline-diagnostics-scope :workspace)
+    (yas-global-mode))
 
 
    (setq lsp-auto-guess-root t)
@@ -310,7 +326,6 @@ With a prefix argument ARG prompts you for a directory on which to run search in
    #+end_src
 
 ** Languages
-
 *** Python
     #+begin_src emacs-lisp
       (setq elpy-rpc-python-command "/usr/bin/python3")
@@ -340,12 +355,22 @@ With a prefix argument ARG prompts you for a directory on which to run search in
 
 *** Javascript/TypeScript
     #+begin_src emacs-lisp
-      ;Todos os pacotes que tentei falharam. Preciso ver como vou fazer ainda
+	    ;Todos os pacotes que tentei falharam. Preciso ver como vou fazer ainda
+    (use-package prettier)
+    (add-hook 'after-init-hook #'global-prettier-mode)
     #+end_src
 
 *** Common Lisp
     #+begin_src emacs-lisp
     (setq inferior-lisp-program "sbcl")
     #+end_src
-    
-    
+
+*** C++
+Eglot is a LSP for C/C++ that uses clangd as backend
+
+#+begin_src emacs-lisp
+(use-package eglot)
+(add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
+(add-hook 'c-mode-hook 'eglot-ensure)
+(add-hook 'c++-mode-hook 'eglot-ensure)
+#+end_src
