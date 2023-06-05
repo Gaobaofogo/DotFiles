@@ -57,6 +57,8 @@ return require('packer').startup(function(use)
 	  }
   }
 
+  use {"jose-elias-alvarez/null-ls.nvim"}
+
   use {"akinsho/toggleterm.nvim", tag = '*', config = function()
     require("toggleterm").setup({
         open_mapping = [[<c-\>]],
