@@ -4,21 +4,21 @@ lsp.preset("recommended")
 
 lsp.ensure_installed({
 	"tsserver",
-	-- 'lua_language_server',
+	"lua_ls",
 	"rust_analyzer",
 	"pyright",
 })
 
 -- Fix Undefined global 'vim'
--- lsp.configure('lua_language_server', {
---     settings = {
---         Lua = {
---             diagnostics = {
---                 globals = { 'vim' }
---             }
---         }
---     }
--- })
+lsp.configure("lua_ls", {
+	settings = {
+		Lua = {
+			diagnostics = {
+				globals = { "vim" },
+			},
+		},
+	},
+})
 
 local cmp = require("cmp")
 local cmp_select = { behavior = cmp.SelectBehavior.Select }
@@ -48,7 +48,7 @@ lsp.set_preferences({
 	},
 })
 
-lsp.on_attach(function(client, bufnr)
+lsp.on_attach(function(_, bufnr)
 	local opts = { buffer = bufnr, remap = false }
 
 	vim.keymap.set("n", "gd", function()
