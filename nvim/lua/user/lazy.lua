@@ -67,7 +67,6 @@ return require("lazy").setup({
 			require("toggleterm").setup({
 				open_mapping = [[<c-\>]],
 				direction = "float",
-				open_mapping = [[<c-\>]],
 				hide_numbers = true,
 				shade_filetypes = {},
 				shade_terminals = true,
@@ -75,7 +74,6 @@ return require("lazy").setup({
 				start_in_insert = true,
 				insert_mappings = true,
 				persist_size = true,
-				direction = "float",
 				close_on_exit = true,
 				--shell = "powershell -NoLogo",
 				float_opts = {
@@ -126,4 +124,5 @@ return require("lazy").setup({
 	},
 	{ "nvim-lua/plenary.nvim" },
 	{ "tjdevries/express_line.nvim" },
+	{ "lukas-reineke/indent-blankline.nvim", main = "ibl", opts = {} },
 })
